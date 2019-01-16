@@ -22,7 +22,7 @@ describe('EOS Wallet', function() {
   });
 
   describe('exportPrivateKeys', function() {
-    it.only('works', function() {
+    it('works', function() {
       var csv = readOnlyWallet.exportPrivateKeys();
       assert.equal(typeof csv, 'string');
       var str = 'ownerPrivateKey,ownerPublicKey,activePrivateKey,activePublicKey\n';
