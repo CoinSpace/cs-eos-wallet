@@ -1,6 +1,7 @@
 {
   "name": "cs-eos-wallet",
   "version": "1.0.8",
+  "repository": "https://github.com/CoinSpace/cs-eos-wallet",
   "description": "",
   "main": "index.js",
   "scripts": {
