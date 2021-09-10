@@ -1,5 +1,8 @@
 {
-  "networkName": "eos",
+  "crypto": {
+    "platform": "eos",
+    "decimals": 4
+  },
   "balance": "0",
   "accountName": "zxczxczxczxc",
   "privateKey": "5KUjBLnyTPep7UUWA98RpvVhV6A9neq26wkFa7qv15YCnzhYUS5",

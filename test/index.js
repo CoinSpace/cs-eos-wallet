@@ -6,6 +6,10 @@ const fixtures = require('./wallet');
 // eslint-disable-next-line max-len
 const RANDOM_SEED = '2b48a48a752f6c49772bf97205660411cd2163fe6ce2de19537e9c94d3648c85c0d7f405660c20253115aaf1799b1c41cdd62b4cfbb6845bc9475495fc64b874';
 const RANDOM_SEED_PUB_KEY = 'EOS7tJKsK8frEPribVBiQXByLkADnDUr3DUUr4LBzuThFPYk8EPSj';
+const crypto = {
+  platform: 'eos',
+  decimals: 4,
+}
 
 describe('EOS Wallet', () => {
   let readOnlyWallet;
@@ -21,7 +25,7 @@ describe('EOS Wallet', () => {
   describe('constructor', () => {
     it('with seed', () => {
       const wallet = new Wallet({
-        networkName: 'eos',
+        crypto,
         seed: RANDOM_SEED,
       });
       assert.ok(wallet);
@@ -30,7 +34,7 @@ describe('EOS Wallet', () => {
 
     it('with publicKey', () => {
       const wallet = new Wallet({
-        networkName: 'eos',
+        crypto,
         publicKey: readOnlyWallet.account.owner.publicKey,
       });
       assert.equal(wallet.account.owner.publicKey, readOnlyWallet.account.owner.publicKey);
@@ -43,7 +47,7 @@ describe('EOS Wallet', () => {
   describe('lock', () => {
     it('works', () => {
       const wallet = new Wallet({
-        networkName: 'eos',
+        crypto,
         seed: RANDOM_SEED,
       });
       assert.equal(wallet.isLocked, false);
@@ -58,7 +62,7 @@ describe('EOS Wallet', () => {
   describe('unlock', () => {
     it('works', () => {
       const wallet = new Wallet({
-        networkName: 'eos',
+        crypto,
         publicKey: RANDOM_SEED_PUB_KEY,
       });
       assert.equal(wallet.isLocked, true);
@@ -75,7 +79,7 @@ describe('EOS Wallet', () => {
   describe('publicKey', () => {
     it('works', () => {
       const wallet = new Wallet({
-        networkName: 'eos',
+        crypto,
         seed: RANDOM_SEED,
       });
       const publicKey = wallet.publicKey();
@@ -84,12 +88,12 @@ describe('EOS Wallet', () => {
 
     it('key is valid', () => {
       const wallet = new Wallet({
-        networkName: 'eos',
+        crypto,
         seed: RANDOM_SEED,
       });
       const publicKey = wallet.publicKey();
       const secondWalet = new Wallet({
-        networkName: 'eos',
+        crypto,
         publicKey,
       });
       secondWalet.unlock(RANDOM_SEED);
