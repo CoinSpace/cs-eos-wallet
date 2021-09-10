@@ -9,7 +9,7 @@ const RANDOM_SEED_PUB_KEY = 'EOS7tJKsK8frEPribVBiQXByLkADnDUr3DUUr4LBzuThFPYk8EP
 const crypto = {
   platform: 'eos',
   decimals: 4,
-}
+};
 
 describe('EOS Wallet', () => {
   let readOnlyWallet;
