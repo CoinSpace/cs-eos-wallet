@@ -1,3 +1,10 @@
-'use strict';
-
-module.exports = require('./lib/wallet');
+export {
+  default,
+  InvalidMemoError,
+  InvalidAccountNameError,
+  AccountNameUnavailableError,
+  DestinationAcountError,
+  ExpiredTransactionError,
+  CPUExceededError,
+  NETExceededError,
+} from './lib/wallet.js';
