@@ -635,6 +635,10 @@ describe('EOS Wallet', () => {
         await wallet.load();
       });
 
+      it('should support meta', () => {
+        assert.ok(wallet.isMetaSupported);
+      });
+
       it('empty meta is valid', async () => {
         assert.ok(await wallet.validateMeta({
           address: SECOND_ACCOUNT_NAME,
@@ -644,7 +648,9 @@ describe('EOS Wallet', () => {
       it('valid memo', async () => {
         assert.ok(await wallet.validateMeta({
           address: SECOND_ACCOUNT_NAME,
-          memo: '12345',
+          meta: {
+            memo: '12345',
+          },
         }));
       });
 
@@ -652,7 +658,9 @@ describe('EOS Wallet', () => {
         await assert.rejects(async () => {
           await wallet.validateMeta({
             address: SECOND_ACCOUNT_NAME,
-            memo: 'x'.repeat(256 + 1),
+            meta: {
+              memo: 'x'.repeat(256 + 1),
+            },
           });
         }, {
           name: 'InvalidMemoError',
