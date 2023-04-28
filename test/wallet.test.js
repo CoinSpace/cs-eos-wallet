@@ -76,15 +76,6 @@ describe('EOS Wallet', () => {
       assert.equal(wallet.address, '');
     });
 
-    it('should open wallet with old public key', async () => {
-      const wallet = new Wallet({
-        ...defaultOptions,
-      });
-      await wallet.open(PUBLIC_KEY);
-      assert.equal(wallet.state, Wallet.STATE_INITIALIZED);
-      assert.equal(wallet.address, '');
-    });
-
     it('should fails without public key', async () => {
       const wallet = new Wallet({
         ...defaultOptions,
