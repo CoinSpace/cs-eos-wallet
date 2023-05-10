@@ -1,14 +1,13 @@
 name: Node.js CI
 
-on:
-  push:
+on: push
 
 jobs:
   test:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        node-version: [16, 18]
+        node-version: [18]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -20,7 +19,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_READ_TOKEN}}
       - run: npm run lint
-      - run: npm test
+      - run: npm run test
 
   publish:
     needs: test
@@ -32,6 +31,9 @@ jobs:
         with:
           node-version: 18
           registry-url: https://npm.pkg.github.com/
+      - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_READ_TOKEN}}
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
