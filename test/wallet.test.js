@@ -201,12 +201,6 @@ describe('EOS Wallet', () => {
     });
   });
 
-  describe('reload', () => {
-    it.skip('should reload wallet', () => {
-      // TODO add test for reload method
-    });
-  });
-
   describe('setupAccount', () => {
     it('should report how to setup account', async () => {
       sinon.stub(defaultOptions.account, 'request')
@@ -510,7 +504,7 @@ describe('EOS Wallet', () => {
           });
         }, {
           name: 'InactiveAccountError',
-          message: 'Inactive Account',
+          message: 'Inactive account',
         });
       });
 
