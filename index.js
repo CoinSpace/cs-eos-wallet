@@ -7,4 +7,4 @@ export {
   ExpiredTransactionError,
   CPUExceededError,
   NETExceededError,
-} from './lib/wallet.js';
+} from './lib/EOSWallet.js';
