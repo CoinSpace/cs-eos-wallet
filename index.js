@@ -1,10 +1,2 @@
-export {
-  default,
-  InvalidMemoError,
-  InvalidAccountNameError,
-  AccountNameUnavailableError,
-  DestinationAcountError,
-  ExpiredTransactionError,
-  CPUExceededError,
-  NETExceededError,
-} from './lib/EOSWallet.js';
+export { default } from './lib/EOSWallet.js';
+export * from './lib/errors.js';
