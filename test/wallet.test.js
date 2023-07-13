@@ -198,6 +198,18 @@ describe('EOS Wallet', () => {
       assert.equal(wallet.balance.value, 123450n);
       storage.verify();
     });
+
+    it('should set STATE_ERROR on error', async () => {
+      const wallet = new Wallet({
+        ...defaultOptions,
+      });
+      await wallet.open({ data: PUBLIC_KEY });
+      sinon.stub(defaultOptions.account, 'request');
+      await assert.rejects(async () => {
+        await wallet.load();
+      });
+      assert.equal(wallet.state, Wallet.STATE_ERROR);
+    });
   });
 
   describe('setupAccount', () => {
