@@ -703,7 +703,7 @@ describe('EOS Wallet', () => {
           data: sinon.match.any,
           baseURL: 'node',
         }).resolves({
-          txId: '12345',
+          txId: '123456',
         });
       sinon.stub(defaultOptions.storage, 'get')
         .withArgs('accountName')
@@ -714,11 +714,12 @@ describe('EOS Wallet', () => {
       await wallet.open({ data: PUBLIC_KEY });
       await wallet.load();
 
-      await wallet.createTransaction({
+      const id = await wallet.createTransaction({
         address: SECOND_ACCOUNT_NAME,
         amount: new Amount(1_0000, wallet.crypto.decimals),
       }, RANDOM_SEED);
       assert.equal(wallet.balance.value, 113450n);
+      assert.equal(id, '123456');
     });
   });
 });
