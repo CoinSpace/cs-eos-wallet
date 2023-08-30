@@ -514,9 +514,9 @@ describe('EOS Wallet', () => {
             amount: new Amount(123n, wallet.crypto.decimals),
           });
         }, {
-          name: 'SmallAmountError',
-          message: 'Small amount',
-          amount: new Amount(1n, wallet.crypto.decimals),
+          name: 'BigAmountError',
+          message: 'Big amount',
+          amount: new Amount(0n, wallet.crypto.decimals),
         });
       });
 
