@@ -1,6 +1,6 @@
 {
   "name": "@coinspace/cs-eos-wallet",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "repository": "https://github.com/CoinSpace/cs-eos-wallet",
   "description": "EOS Wallet for Coin app",
   "author": "Coin Crypto Wallet <support@coin.space> (https://coin.space/)",
