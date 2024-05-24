@@ -427,12 +427,16 @@ describe('EOS Wallet', () => {
         assert.ok(await wallet.validateAddress({ address: SECOND_ACCOUNT_NAME }));
       });
 
+      it('valid address with dot', async () => {
+        assert.ok(await wallet.validateAddress({ address: 'ssssssss.sss' }));
+      });
+
       it('invalid address', async () => {
         await assert.rejects(async () => {
-          await wallet.validateAddress({ address: '123' });
+          await wallet.validateAddress({ address: '126' });
         }, {
           name: 'InvalidAddressError',
-          message: 'Invalid address "123"',
+          message: 'Invalid address "126"',
         });
       });
 
