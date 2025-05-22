@@ -18,19 +18,21 @@ const eosAtEos = {
   type: 'coin',
   decimals: 4,
 };
-const defaultOptions = {
-  crypto: eosAtEos,
-  platform: eosAtEos,
-  cache: { get() {}, set() {} },
-  settings: { get() {}, set() {} },
-  account: {
-    request(...args) { console.log(args); },
-  },
-  apiNode: 'node',
-  storage: { get() {}, set() {}, save() {} },
-};
+let defaultOptions;
 
 describe('EOS Wallet', () => {
+  beforeEach(() => {
+    defaultOptions = {
+      crypto: eosAtEos,
+      platform: eosAtEos,
+      cache: { get() {}, set() {} },
+      settings: { get() {}, set() {} },
+      request(...args) { console.log(args); },
+      apiNode: 'node',
+      storage: { get() {}, set() {}, save() {} },
+    };
+  });
+
   afterEach(() => {
     sinon.restore();
   });
@@ -104,12 +106,13 @@ describe('EOS Wallet', () => {
 
   describe('load', () => {
     it('should load wallet (need activation)', async () => {
-      sinon.stub(defaultOptions.account, 'request')
+      sinon.stub(defaultOptions, 'request')
         .withArgs({
           seed: 'device',
           method: 'GET',
           url: `api/v1/account/key/${PUBLIC_KEY}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({});
       sinon.stub(defaultOptions.storage, 'get')
         .withArgs('accountName')
@@ -123,12 +126,13 @@ describe('EOS Wallet', () => {
     });
 
     it('should load wallet (account name in storage)', async () => {
-      sinon.stub(defaultOptions.account, 'request')
+      sinon.stub(defaultOptions, 'request')
         .withArgs({
           seed: 'device',
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           isValid: true,
         })
@@ -137,6 +141,7 @@ describe('EOS Wallet', () => {
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           balance: 12.345,
           isActive: true,
@@ -158,12 +163,13 @@ describe('EOS Wallet', () => {
     });
 
     it('should load wallet (account name from API)', async () => {
-      sinon.stub(defaultOptions.account, 'request')
+      sinon.stub(defaultOptions, 'request')
         .withArgs({
           seed: 'device',
           method: 'GET',
           url: `api/v1/account/key/${PUBLIC_KEY}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           accountName: ACCOUNT_NAME,
         })
@@ -172,6 +178,7 @@ describe('EOS Wallet', () => {
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           isValid: true,
         })
@@ -180,6 +187,7 @@ describe('EOS Wallet', () => {
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           balance: 12.345,
           isActive: true,
@@ -202,11 +210,18 @@ describe('EOS Wallet', () => {
     });
 
     it('should set STATE_ERROR on error', async () => {
+      sinon.stub(defaultOptions, 'request')
+        .withArgs({
+          seed: 'device',
+          method: 'GET',
+          url: `api/v1/account/key/${PUBLIC_KEY}`,
+          baseURL: 'node',
+          headers: sinon.match.object,
+        }).rejects();
       const wallet = new Wallet({
         ...defaultOptions,
       });
       await wallet.open({ data: PUBLIC_KEY });
-      sinon.stub(defaultOptions.account, 'request');
       await assert.rejects(async () => {
         await wallet.load();
       });
@@ -216,18 +231,20 @@ describe('EOS Wallet', () => {
 
   describe('setupAccount', () => {
     it('should report how to setup account', async () => {
-      sinon.stub(defaultOptions.account, 'request')
+      sinon.stub(defaultOptions, 'request')
         .withArgs({
           seed: 'device',
           method: 'GET',
           url: `api/v1/account/key/${PUBLIC_KEY}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({})
         .withArgs({
           seed: 'device',
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           isValid: false,
         })
@@ -236,6 +253,7 @@ describe('EOS Wallet', () => {
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           isActive: false,
         })
@@ -244,6 +262,7 @@ describe('EOS Wallet', () => {
           method: 'GET',
           url: 'api/v1/accountSetupPrice',
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           price: 123,
         });
@@ -293,12 +312,13 @@ describe('EOS Wallet', () => {
 
   describe('estimateMaxAmount', () => {
     it('should correct estimate max amount', async () => {
-      sinon.stub(defaultOptions.account, 'request')
+      sinon.stub(defaultOptions, 'request')
         .withArgs({
           seed: 'device',
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           balance: 12.345,
           isActive: true,
@@ -308,6 +328,7 @@ describe('EOS Wallet', () => {
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           isValid: true,
         });
@@ -324,12 +345,13 @@ describe('EOS Wallet', () => {
     });
 
     it('should estimate max amount to be 0', async () => {
-      sinon.stub(defaultOptions.account, 'request')
+      sinon.stub(defaultOptions, 'request')
         .withArgs({
           seed: 'device',
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           balance: 0,
           isActive: true,
@@ -339,6 +361,7 @@ describe('EOS Wallet', () => {
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           isValid: true,
         });
@@ -357,12 +380,13 @@ describe('EOS Wallet', () => {
 
   describe('estimateTransactionFee', () => {
     it('should estimate transaction fee', async () => {
-      sinon.stub(defaultOptions.account, 'request')
+      sinon.stub(defaultOptions, 'request')
         .withArgs({
           seed: 'device',
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           balance: 10,
           isActive: true,
@@ -372,6 +396,7 @@ describe('EOS Wallet', () => {
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           isValid: true,
         });
@@ -395,12 +420,13 @@ describe('EOS Wallet', () => {
     describe('validateAddress', () => {
       let wallet;
       beforeEach(async () => {
-        sinon.stub(defaultOptions.account, 'request')
+        sinon.stub(defaultOptions, 'request')
           .withArgs({
             seed: 'device',
             method: 'GET',
             url: `api/v1/account/${ACCOUNT_NAME}`,
             baseURL: 'node',
+            headers: sinon.match.object,
           }).resolves({
             balance: 12.345,
             isActive: true,
@@ -410,6 +436,7 @@ describe('EOS Wallet', () => {
             method: 'GET',
             url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
             baseURL: 'node',
+            headers: sinon.match.object,
           }).resolves({
             isValid: true,
           });
@@ -452,12 +479,13 @@ describe('EOS Wallet', () => {
 
     describe('validateAmount', () => {
       it('should be valid amount', async () => {
-        sinon.stub(defaultOptions.account, 'request')
+        sinon.stub(defaultOptions, 'request')
           .withArgs({
             seed: 'device',
             method: 'GET',
             url: `api/v1/account/${ACCOUNT_NAME}`,
             baseURL: 'node',
+            headers: sinon.match.object,
           }).resolves({
             balance: 12.345,
             isActive: true,
@@ -467,6 +495,7 @@ describe('EOS Wallet', () => {
             method: 'GET',
             url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
             baseURL: 'node',
+            headers: sinon.match.object,
           }).resolves({
             isValid: true,
           });
@@ -487,12 +516,13 @@ describe('EOS Wallet', () => {
       });
 
       it('throw on inactive account', async () => {
-        sinon.stub(defaultOptions.account, 'request')
+        sinon.stub(defaultOptions, 'request')
           .withArgs({
             seed: 'device',
             method: 'GET',
             url: `api/v1/account/${ACCOUNT_NAME}`,
             baseURL: 'node',
+            headers: sinon.match.object,
           }).resolves({
             balance: 0,
             isActive: false,
@@ -502,6 +532,7 @@ describe('EOS Wallet', () => {
             method: 'GET',
             url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
             baseURL: 'node',
+            headers: sinon.match.object,
           }).resolves({
             isValid: true,
           });
@@ -527,12 +558,13 @@ describe('EOS Wallet', () => {
       });
 
       it('throw on small amount', async () => {
-        sinon.stub(defaultOptions.account, 'request')
+        sinon.stub(defaultOptions, 'request')
           .withArgs({
             seed: 'device',
             method: 'GET',
             url: `api/v1/account/${ACCOUNT_NAME}`,
             baseURL: 'node',
+            headers: sinon.match.object,
           }).resolves({
             balance: 12.345,
             isActive: true,
@@ -542,6 +574,7 @@ describe('EOS Wallet', () => {
             method: 'GET',
             url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
             baseURL: 'node',
+            headers: sinon.match.object,
           }).resolves({
             isValid: true,
           });
@@ -567,12 +600,13 @@ describe('EOS Wallet', () => {
       });
 
       it('throw on big amount', async () => {
-        sinon.stub(defaultOptions.account, 'request')
+        sinon.stub(defaultOptions, 'request')
           .withArgs({
             seed: 'device',
             method: 'GET',
             url: `api/v1/account/${ACCOUNT_NAME}`,
             baseURL: 'node',
+            headers: sinon.match.object,
           }).resolves({
             balance: 12.345,
             isActive: true,
@@ -582,6 +616,7 @@ describe('EOS Wallet', () => {
             method: 'GET',
             url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
             baseURL: 'node',
+            headers: sinon.match.object,
           }).resolves({
             isValid: true,
           });
@@ -610,12 +645,13 @@ describe('EOS Wallet', () => {
     describe('validateMeta', () => {
       let wallet;
       beforeEach(async () => {
-        sinon.stub(defaultOptions.account, 'request')
+        sinon.stub(defaultOptions, 'request')
           .withArgs({
             seed: 'device',
             method: 'GET',
             url: `api/v1/account/${ACCOUNT_NAME}`,
             baseURL: 'node',
+            headers: sinon.match.object,
           }).resolves({
             balance: 12.345,
             isActive: true,
@@ -625,6 +661,7 @@ describe('EOS Wallet', () => {
             method: 'GET',
             url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
             baseURL: 'node',
+            headers: sinon.match.object,
           }).resolves({
             isValid: true,
           });
@@ -676,12 +713,13 @@ describe('EOS Wallet', () => {
 
   describe('createTransaction', () => {
     it('should create valid transaction', async () => {
-      sinon.stub(defaultOptions.account, 'request')
+      sinon.stub(defaultOptions, 'request')
         .withArgs({
           seed: 'device',
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           balance: 12.345,
           isActive: true,
@@ -691,6 +729,7 @@ describe('EOS Wallet', () => {
           method: 'GET',
           url: `api/v1/account/${ACCOUNT_NAME}/validate/${PUBLIC_KEY}`,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           isValid: true,
         })
@@ -700,6 +739,7 @@ describe('EOS Wallet', () => {
           url: 'api/v1/tx/serialize',
           data: sinon.match.any,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           serializedTransaction: 'aa',
         })
@@ -709,6 +749,7 @@ describe('EOS Wallet', () => {
           url: 'api/v1/tx/send',
           data: sinon.match.any,
           baseURL: 'node',
+          headers: sinon.match.object,
         }).resolves({
           txId: '123456',
         });
