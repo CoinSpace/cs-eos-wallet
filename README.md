@@ -1,4 +1,4 @@
-# cs-eos-wallet
+# cs-eos-wallet (deprecated)
 
 [![Build](https://github.com/CoinSpace/cs-eos-wallet/actions/workflows/ci.yml/badge.svg)](https://github.com/CoinSpace/cs-eos-wallet/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/github/v/tag/CoinSpace/cs-eos-wallet?label=version)](https://github.com/CoinSpace/cs-eos-wallet/tags)
